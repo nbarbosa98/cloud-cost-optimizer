@@ -6,10 +6,10 @@ Build an end-to-end tool that identifies cloud waste using AI and automates the 
 ## 📅 Phases
 
 ### Phase 1: The Data Collection Layer
-- [ ] Setup project structure.
-- [ ] Build Mock Data Generator (for testing).
-- [ ] Implement AWS Resource Collector using `boto3`.
-- [ ] Normalize data into standardized JSON.
+- [x] Setup project structure.
+- [x] Build Mock Data Generator (for testing).
+- [x] Implement AWS Resource Collector using `boto3` (covered by fake-client tests; not yet run against a live account).
+- [x] Normalize data into standardized JSON.
 
 ### Phase 2: The Intelligence Layer
 - [ ] Design FinOps expert system prompts.
