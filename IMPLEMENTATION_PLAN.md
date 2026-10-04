@@ -12,9 +12,9 @@ Build an end-to-end tool that identifies cloud waste using AI and automates the 
 - [x] Normalize data into standardized JSON.
 
 ### Phase 2: The Intelligence Layer
-- [ ] Design FinOps expert system prompts.
-- [ ] Integrate LLM API (OpenAI/Claude).
-- [ ] Implement structured JSON output for recommendations.
+- [x] Design FinOps expert system prompts.
+- [x] Integrate LLM API (Claude; covered by fake-client tests, not yet run against the live API).
+- [x] Implement structured JSON output for recommendations (savings are computed in code, not by the LLM).
 
 ### Phase 3: The Action Layer
 - [ ] Build "Dry Run" generator (Terraform/Bash).

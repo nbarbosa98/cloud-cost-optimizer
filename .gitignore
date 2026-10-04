@@ -4,5 +4,10 @@ __pycache__/
 .pytest_cache/
 .venv/
 .env
-# collector output
+# local editor and agent settings
+.vscode/
+.claude/settings.local.json
+.claude/launch.json
+# collector and analyst output
 snapshot*.json
+recommendations*.json
