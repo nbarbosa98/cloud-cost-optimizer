@@ -30,9 +30,13 @@ python -m collector --source mock --count 30 --seed 42 --out snapshot.json
 # Real AWS snapshot (read-only: EC2, EBS, RDS and CloudWatch)
 python -m collector --source aws --region eu-west-1 --lookback-days 14 --out snapshot.json
 
+# Recommendations from Claude (needs ANTHROPIC_API_KEY)
+python -m analyst snapshot.json --out recommendations.json
+
 pytest
 ```
 
+### Collector output
 Both sources produce the same normalized JSON, defined in `collector/schema.py`:
 
 ```json
@@ -63,6 +67,38 @@ Both sources produce the same normalized JSON, defined in `collector/schema.py`:
 `type` is one of `compute_instance`, `block_volume` or `database`. `monthly_cost_usd` is an estimate from approximate us-east-1 list prices (`collector/pricing.py`), not billing data, and is `null` for sizes outside that table.
 
 The AWS collector needs `ec2:DescribeInstances`, `ec2:DescribeVolumes`, `rds:DescribeDBInstances` and `cloudwatch:GetMetricStatistics`.
+
+### Analyst output
+Claude (`claude-opus-5-5`) chooses one action per resource: `resize`, `stop`, `delete` or `keep`. The response is schema-enforced JSON. Claude does not produce any dollar figures: `analyst/report.py` checks each recommendation against the snapshot and computes the saving from the price table.
+
+```json
+{
+  "report_version": "1",
+  "model": "claude-opus-5-5",
+  "total_monthly_cost_usd": 1830.12,
+  "total_monthly_saving_usd": 412.5,
+  "recommendations": [
+    {
+      "resource_id": "i-0abc...",
+      "resource_type": "compute_instance",
+      "name": "web-prod-app-01",
+      "action": "resize",
+      "current_size": "t3.large",
+      "target_size": "t3.small",
+      "current_monthly_cost_usd": 60.74,
+      "monthly_saving_usd": 45.56,
+      "confidence": "high",
+      "reasoning": "CPU averaged 3.1% and peaked at 12.4% over 14 days."
+    }
+  ],
+  "rejected": [],
+  "unreviewed": []
+}
+```
+
+- `rejected` lists recommendations that could not apply, such as an unknown resource id or a size outside the price table, with the reason.
+- `unreviewed` lists resources Claude returned no usable recommendation for.
+- `monthly_saving_usd` is `null` when the resource's size has no price.
 
 ---
 *This project was built to showcase experience in Cloud Administration, LLMOps, and Infrastructure as Code.*

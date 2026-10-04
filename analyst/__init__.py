@@ -1,1 +1,1 @@
-"""LLM prompt engineering and analysis (Phase 2)."""
+"""LLM analysis: Claude picks the action, code computes the savings."""
